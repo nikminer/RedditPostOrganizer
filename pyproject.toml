@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "reddit-gallery-desktop"
+version = "1.0.0"
+description = "Local Reddit gallery scheduler for Windows"
+requires-python = ">=3.12"
+dependencies = ["PySide6>=6.8,<7", "playwright>=1.51,<2", "tzdata>=2025.1", "Pillow>=11,<13"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "pyinstaller>=6.12"]
+
+[project.gui-scripts]
+reddit-gallery = "reddit_gallery.app:main"
+
+[tool.setuptools.packages.find]
+include = ["reddit_gallery*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
