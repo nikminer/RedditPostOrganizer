@@ -6,6 +6,7 @@
     <Nullable>enable</Nullable>
     <AssemblyName>RedditGallery</AssemblyName>
     <Title>Reddit Post Organizer</Title>
+    <AssemblyTitle>Reddit Post Organizer</AssemblyTitle>
     <Product>Reddit Post Organizer</Product>
     <Description>Reddit Post Organizer</Description>
     <Version>3.0.0</Version>
