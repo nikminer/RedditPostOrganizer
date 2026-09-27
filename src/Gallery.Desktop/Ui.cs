@@ -47,7 +47,7 @@ public static class Ui
     {
         var w = new Window
         {
-            Title = "Gallery",
+            Title = "Reddit Post Organizer",
             Width = 500,
             SizeToContent = SizeToContent.Height,
             CanResize = false,
@@ -68,7 +68,7 @@ public static class Ui
     {
         var w = new Window
         {
-            Title = "Gallery",
+            Title = "Reddit Post Organizer",
             Width = 640,
             Height = 360,
             WindowStartupLocation = WindowStartupLocation.CenterOwner,

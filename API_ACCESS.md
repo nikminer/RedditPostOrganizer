@@ -1,4 +1,4 @@
-# Reddit API access review — Gallery Desktop
+# Reddit API access review — Reddit Post Organizer
 
 ## Status and purpose
 

@@ -30,7 +30,7 @@ public sealed partial class App : Application
             desktop.MainWindow = window;
             desktop.ShutdownMode = ShutdownMode.OnExplicitShutdown;
             var menu = new NativeMenu();
-            var open = new NativeMenuItem("Открыть Gallery");
+            var open = new NativeMenuItem("Открыть Reddit Post Organizer");
             open.Click += (_, _) =>
             {
                 window.Show();
@@ -55,7 +55,7 @@ public sealed partial class App : Application
             tray = new()
             {
                 Icon = new WindowIcon(stream),
-                ToolTipText = "Gallery · Reddit API",
+                ToolTipText = "Reddit Post Organizer",
                 Menu = menu,
                 IsVisible = true,
             };

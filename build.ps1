@@ -11,14 +11,16 @@ try {
     $stage = Join-Path $PSScriptRoot ('work/publish-' + [guid]::NewGuid().ToString('N'))
     dotnet publish src/Gallery.Desktop -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:DebugType=None -p:RestoreLockedMode=true -o $stage
     if ($LASTEXITCODE) { throw 'Publish failed' }
+    $exeName = 'Reddit Post Organizer.exe'
+    Rename-Item -LiteralPath (Join-Path $stage 'RedditGallery.exe') -NewName $exeName
     Copy-Item README.md,API_ACCESS.md,VALIDATION.md -Destination $stage
     & ./scripts/collect-notices.ps1
     Copy-Item THIRD_PARTY_LICENSES -Destination $stage -Recurse
     $target = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot 'dist/RedditGallery'))
     $expected = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot 'dist'))
     if ([IO.Path]::GetDirectoryName($target) -ne $expected) { throw 'Unexpected output path' }
-    $active = Get-Process RedditGallery -ErrorAction SilentlyContinue | Where-Object { $_.Path -eq (Join-Path $target 'RedditGallery.exe') }
-    if ($active) { throw 'Close Gallery using its Exit command before replacing the build.' }
+    $active = Get-Process | Where-Object { $_.Path -and ([IO.Path]::GetDirectoryName($_.Path) -eq $target) }
+    if ($active) { throw 'Close Reddit Post Organizer using its Exit command before replacing the build.' }
     New-Item -ItemType Directory -Force -Path $expected,(Join-Path $PSScriptRoot 'releases') | Out-Null
     if (Test-Path -LiteralPath $target) {
         $previous = Join-Path $PSScriptRoot ('work/previous-runtime-' + [guid]::NewGuid().ToString('N'))
@@ -26,6 +28,6 @@ try {
         Move-Item -LiteralPath $target -Destination $previous
     }
     Move-Item -LiteralPath $stage -Destination $target
-    Compress-Archive -Path "$target/*" -DestinationPath releases/RedditGallery-Avalonia-API-Portable.zip -Force
-    Write-Host "Ready: $target/RedditGallery.exe"
+    Compress-Archive -Path "$target/*" -DestinationPath releases/Reddit-Post-Organizer-Portable.zip -Force
+    Write-Host "Ready: $target/$exeName"
 } finally { Pop-Location }

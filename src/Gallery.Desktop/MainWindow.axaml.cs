@@ -1011,7 +1011,7 @@ public sealed partial class MainWindow : Window
         var path = await Ui.SaveFile(
             this,
             "Резервная копия",
-            $"Gallery-{DateTime.Now:yyyy-MM-dd-HHmmss}.zip"
+            $"Reddit-Post-Organizer-{DateTime.Now:yyyy-MM-dd-HHmmss}.zip"
         );
         if (path is null)
             return;

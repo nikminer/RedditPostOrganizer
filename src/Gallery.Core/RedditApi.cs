@@ -414,10 +414,10 @@ public sealed class RedditApi : IDisposable
                 if (valid && !denied)
                     code = returnedCode;
                 var body = Encoding.UTF8.GetBytes(
-                    "<!doctype html><meta charset=utf-8><title>Gallery</title><p>"
+                    "<!doctype html><meta charset=utf-8><title>Reddit Post Organizer</title><p>"
                         + (
                             valid
-                                ? "Вернитесь в Gallery для завершения подключения."
+                                ? "Вернитесь в Reddit Post Organizer для завершения подключения."
                                 : "Некорректный ответ. Вернитесь в приложение."
                         )
                         + "</p>"

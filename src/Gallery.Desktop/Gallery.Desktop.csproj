@@ -5,6 +5,9 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <AssemblyName>RedditGallery</AssemblyName>
+    <Title>Reddit Post Organizer</Title>
+    <Product>Reddit Post Organizer</Product>
+    <Description>Reddit Post Organizer</Description>
     <Version>3.0.0</Version>
     <AvaloniaUseCompiledBindingsByDefault>false</AvaloniaUseCompiledBindingsByDefault>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
