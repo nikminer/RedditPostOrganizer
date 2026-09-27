@@ -1,53 +1,27 @@
-# Постоянная папка проекта
+# Организация проекта
 
-Проект хранится в `C:\Users\nikmi\Documents\Projects\RedditGallery` и не зависит от временной папки беседы Codex.
+Постоянная папка: `C:\Users\nikmi\Documents\Projects\RedditGallery`.
+Внутри — обычный локальный Git-репозиторий `.git`, решение `RedditGallery.sln`, исходники C#/Avalonia, тесты, документация и сценарии сборки. Прежние коммиты сохранены. GitHub remote не настроен: публикация репозитория отдельно не выполнялась.
 
-## Обычный запуск
-
-Откройте ярлык **Gallery — Reddit** на рабочем столе либо `dist\RedditGallery\RedditGallery.exe`.
-Приложение не требует установки Python. Не выносите EXE отдельно из его папки: рядом нужны `_internal` и `browsers`.
-
-Ярлык **RedditGallery — проект** на рабочем столе открывает эту папку.
-
-## Структура
-
-| Путь | Назначение |
-| --- | --- |
-| `reddit_gallery/` | Исходники приложения |
-| `tests/` | Автоматические тесты |
-| `dist/RedditGallery/` | Готовое приложение и встроенный браузер |
-| `releases/` | ZIP для запуска без установки и EXE-установщик |
-| `pyproject.toml` | Описание Python-проекта и зависимости |
-| `requirements-lock.txt` | Проверенные версии зависимостей |
-| `setup-dev.ps1` | Создание среды разработки |
-| `run-dev.ps1` | Запуск из исходников |
-| `test.ps1` | Запуск тестов |
-| `build.ps1` | Сборка автономного приложения |
-| `installer.iss` | Сценарий создания установщика Inno Setup |
-| `README.md` | Инструкция пользователя и ограничения |
-| `VALIDATION.md` | Результаты проверок |
-
-## Разработка
-
-Откройте PowerShell в этой папке. Для среды разработки нужен Python 3.12 с командой `py`.
+Откройте решение в Rider или Visual Studio с поддержкой .NET 10. Команды выполняются из корня:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File .\setup-dev.ps1
-powershell -ExecutionPolicy Bypass -File .\run-dev.ps1
-powershell -ExecutionPolicy Bypass -File .\test.ps1 -q
-powershell -ExecutionPolicy Bypass -File .\build.ps1
+./setup-dev.ps1
+./test.ps1
+./run-dev.ps1
+./build.ps1
 ```
 
-Для отдельного тестового профиля: `run-dev.ps1 --data-dir .\build\test-profile`.
-Обычный запуск из исходников использует ту же базу, что и готовое приложение. Перед изменениями данных создайте резервную копию из меню приложения.
+Для отдельной тестовой базы: `dotnet run --project src/Gallery.Desktop -- --data-dir "C:\Temp\GalleryDev"`.
 
-Автономная сборка появляется в `dist/RedditGallery`. Для создания установщика с установленным Inno Setup выполните `ISCC.exe installer.iss`; результат попадёт в `releases/`.
+Результат сборки: `dist/RedditGallery/RedditGallery.exe`; архив: `releases/RedditGallery-Avalonia-API-Portable.zip`. Старая заменённая сборка сохраняется в `work/previous-runtime-*`; старые релизы также остаются в `releases`. Эти каталоги не входят в Git. Пользовательские данные, OAuth-токены, SQLite, медиахранилища, bin/obj и временные файлы исключены из репозитория.
 
-Исходники находятся под контролем Git. Сборки, архивы, браузеры и среды разработки исключены из Git. Первая фиксация сохраняет перенесённую версию проекта. Локальный Git хранит историю, но не является резервной копией на другом устройстве.
+Для рассмотрения заявки Reddit приложите репозиторий с `API_ACCESS.md`. Не добавляйте папку данных, собственные фотографии, токены или резервные копии. Client ID вводится через интерфейс после получения доступа; Client Secret для installed app не нужен.
 
-## Пользовательские данные
+Windows smoke test готового EXE (отдельная пустая папка обязательна):
 
-База, изображения и сессия Reddit хранятся отдельно: `%LOCALAPPDATA%\RedditGallery`.
-Перенос папки проекта не переносит и не удаляет эти данные. Для переноса галерей используйте резервное копирование в приложении; браузерная сессия в архив не включается.
+```powershell
+./dist/RedditGallery/RedditGallery.exe --data-dir "C:\Temp\GallerySmoke" --smoke-test --tray
+```
 
-Реальная публикация на Reddit пока не подтверждена: при проверке сайт показал страницу проверки человека. Порядок подключения описан в README.
+Он создаёт SQLite, запускает Avalonia и трей, записывает `smoke-test.json` и завершает приложение без обращений к Reddit и без запуска очереди.

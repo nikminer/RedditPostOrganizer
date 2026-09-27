@@ -1,22 +1,31 @@
-param([string]$Python = "$PSScriptRoot\.venv\Scripts\python.exe", [string]$BrowserPath = "$PSScriptRoot\.browsers")
+param([switch]$SkipTests)
 $ErrorActionPreference = 'Stop'
-$OriginalPath = $env:PATH
-$Python = (Get-Command $Python -ErrorAction Stop).Source
 Push-Location $PSScriptRoot
 try {
-    & $Python -m pip install -r requirements-lock.txt
-    if ($LASTEXITCODE -ne 0) { throw 'Locked dependency installation failed' }
-    & $Python -m pip install -e '.[dev]'
-    if ($LASTEXITCODE -ne 0) { throw 'Dependency installation failed' }
-    $env:PLAYWRIGHT_BROWSERS_PATH = $BrowserPath
-    & $Python -m playwright install chromium --no-shell
-    if ($LASTEXITCODE -ne 0) { throw 'Chromium installation failed' }
-    # Keep unrelated tools' ICU DLLs out of the Qt bundle. Qt uses Windows ICU.
-    $env:PATH = "$env:SystemRoot\System32;$env:SystemRoot;$(Split-Path $Python)"
-    & $Python -m PyInstaller --clean --noconfirm --windowed --name RedditGallery --collect-data tzdata --collect-data playwright launch.py
-    if ($LASTEXITCODE -ne 0) { throw 'Build failed' }
-    Copy-Item -LiteralPath $BrowserPath -Destination "$PSScriptRoot\dist\RedditGallery\browsers" -Recurse -Force
-    Copy-Item -LiteralPath "$PSScriptRoot\README.md" -Destination "$PSScriptRoot\dist\RedditGallery\README.md" -Force
-    & $Python collect_licenses.py "$PSScriptRoot\dist\RedditGallery"
-    Write-Host 'Ready: dist\RedditGallery\RedditGallery.exe'
-} finally { $env:PATH = $OriginalPath; Pop-Location }
+    dotnet restore RedditGallery.sln --locked-mode
+    if ($LASTEXITCODE) { throw 'Restore failed' }
+    if (-not $SkipTests) {
+        dotnet test RedditGallery.sln -c Release --no-restore
+        if ($LASTEXITCODE) { throw 'Tests failed' }
+    }
+    $stage = Join-Path $PSScriptRoot ('work/publish-' + [guid]::NewGuid().ToString('N'))
+    dotnet publish src/Gallery.Desktop -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:DebugType=None -p:RestoreLockedMode=true -o $stage
+    if ($LASTEXITCODE) { throw 'Publish failed' }
+    Copy-Item README.md,API_ACCESS.md,VALIDATION.md -Destination $stage
+    & ./scripts/collect-notices.ps1
+    Copy-Item THIRD_PARTY_LICENSES -Destination $stage -Recurse
+    $target = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot 'dist/RedditGallery'))
+    $expected = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot 'dist'))
+    if ([IO.Path]::GetDirectoryName($target) -ne $expected) { throw 'Unexpected output path' }
+    $active = Get-Process RedditGallery -ErrorAction SilentlyContinue | Where-Object { $_.Path -eq (Join-Path $target 'RedditGallery.exe') }
+    if ($active) { throw 'Close Gallery using its Exit command before replacing the build.' }
+    New-Item -ItemType Directory -Force -Path $expected,(Join-Path $PSScriptRoot 'releases') | Out-Null
+    if (Test-Path -LiteralPath $target) {
+        $previous = Join-Path $PSScriptRoot ('work/previous-runtime-' + [guid]::NewGuid().ToString('N'))
+        if (-not ([IO.Path]::GetFullPath($previous).StartsWith([IO.Path]::GetFullPath((Join-Path $PSScriptRoot 'work')) + [IO.Path]::DirectorySeparatorChar))) { throw 'Unexpected archive path' }
+        Move-Item -LiteralPath $target -Destination $previous
+    }
+    Move-Item -LiteralPath $stage -Destination $target
+    Compress-Archive -Path "$target/*" -DestinationPath releases/RedditGallery-Avalonia-API-Portable.zip -Force
+    Write-Host "Ready: $target/RedditGallery.exe"
+} finally { Pop-Location }

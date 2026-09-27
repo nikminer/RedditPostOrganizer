@@ -1,0 +1,91 @@
+<Window
+  xmlns="https://github.com/avaloniaui"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  x:Class="Gallery.Desktop.MainWindow"
+  Title="Gallery · Reddit API"
+  Width="1320"
+  Height="900"
+  MinWidth="980"
+  MinHeight="680"
+>
+  <Grid>
+    <Grid
+      x:Name="Workspace"
+      Margin="24"
+      RowDefinitions="Auto,Auto,Auto,Auto,*,Auto,Auto"
+      RowSpacing="14"
+    >
+      <Grid ColumnDefinitions="*,Auto">
+        <StackPanel Orientation="Horizontal" Spacing="16">
+          <TextBlock Text="Gallery" FontSize="30" FontWeight="Bold" />
+          <TextBlock
+            Text="REDDIT API · КАЛЕНДАРЬ ПУБЛИКАЦИЙ"
+            VerticalAlignment="Center"
+            Foreground="#596984"
+          />
+        </StackPanel>
+        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+          <Button x:Name="ConnectButton" Content="Подключить Reddit" />
+          <Button x:Name="SettingsButton" Content="Настройки" />
+          <Button x:Name="MoreButton" Content="Ещё ▾" />
+        </StackPanel>
+      </Grid>
+      <TextBlock Grid.Row="1" x:Name="Summary" Foreground="#596984" TextWrapping="Wrap" />
+      <Grid Grid.Row="2" ColumnDefinitions="*,Auto">
+        <StackPanel Orientation="Horizontal" Spacing="8">
+          <Button x:Name="NewButton" Content="+ Галерея" Classes="primary" />
+          <Button x:Name="PauseButton" Content="Запустить очередь" />
+          <Button x:Name="ImportButton" Content="Скачать мои посты" />
+          <ComboBox x:Name="ViewMode" Width="120" SelectedIndex="0">
+            <ComboBoxItem Content="Месяц" />
+            <ComboBoxItem Content="Неделя" />
+            <ComboBoxItem Content="День" />
+            <ComboBoxItem Content="Список" />
+          </ComboBox>
+        </StackPanel>
+        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="7">
+          <Button x:Name="PreviousButton" Content="‹" />
+          <Button x:Name="TodayButton" Content="Сегодня" />
+          <Button x:Name="NextButton" Content="›" />
+          <CalendarDatePicker x:Name="AnchorDate" Width="150" />
+        </StackPanel>
+      </Grid>
+      <Grid Grid.Row="3" ColumnDefinitions="2*,*,*,*" ColumnSpacing="10">
+        <TextBox x:Name="Search" Watermark="Поиск по заголовку и заметкам" />
+        <TextBox x:Name="Community" Grid.Column="1" Watermark="Сообщество" />
+        <TextBox x:Name="TagFilter" Grid.Column="2" Watermark="Локальный тег" />
+        <ComboBox x:Name="StatusFilter" Grid.Column="3" HorizontalAlignment="Stretch" />
+      </Grid>
+      <Grid Grid.Row="4">
+        <ScrollViewer x:Name="CalendarScroll" HorizontalScrollBarVisibility="Disabled">
+          <Grid x:Name="CalendarGrid" />
+        </ScrollViewer>
+        <ListBox x:Name="PostList" IsVisible="False" SelectionMode="Multiple,Toggle" />
+      </Grid>
+      <WrapPanel Grid.Row="5" Orientation="Horizontal">
+        <Button x:Name="EditButton" Content="Открыть" Margin="0,0,8,0" />
+        <Button x:Name="CopyButton" Content="Копия" Margin="0,0,8,0" />
+        <Button x:Name="CopiesButton" Content="Несколько копий" Margin="0,0,8,0" />
+        <Button x:Name="BatchButton" Content="Массовые действия" Margin="0,0,8,0" />
+        <Button x:Name="HistoryButton" Content="История" Margin="0,0,8,0" />
+        <Button x:Name="ResolveButton" Content="Проверить результат" />
+      </WrapPanel>
+      <Border Grid.Row="6" Background="#E8EEF9" CornerRadius="7" Padding="12">
+        <TextBlock
+          x:Name="NoticeText"
+          Text="Посты хранятся на этом ПК. Для отправки и скачивания подключите Reddit API."
+          TextWrapping="Wrap"
+          Foreground="#354B71"
+        />
+      </Border>
+    </Grid>
+    <Border x:Name="LockScreen" IsVisible="False" Background="#F3F5FA">
+      <StackPanel Width="380" VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="16">
+        <TextBlock Text="Gallery заблокирован" FontSize="26" FontWeight="Bold" />
+        <TextBlock Text="Фоновая очередь продолжает работу." />
+        <TextBox x:Name="LockPassword" PasswordChar="●" Watermark="Пароль приложения" />
+        <Button x:Name="UnlockButton" Content="Разблокировать" Classes="primary" />
+      </StackPanel>
+    </Border>
+  </Grid>
+</Window>

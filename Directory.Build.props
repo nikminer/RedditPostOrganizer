@@ -1,0 +1,5 @@
+<Project>
+  <PropertyGroup Condition="'$(RuntimeIdentifier)' != ''">
+    <NuGetLockFilePath>packages.$(RuntimeIdentifier).lock.json</NuGetLockFilePath>
+  </PropertyGroup>
+</Project>

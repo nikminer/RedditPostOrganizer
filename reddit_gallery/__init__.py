@@ -1,1 +1,0 @@
-"""Reddit Gallery desktop application."""
