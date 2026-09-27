@@ -6,7 +6,9 @@
 
 Распакуйте `Reddit-Post-Organizer-Portable.zip` и запустите `Reddit Post Organizer.exe`. Python, Chromium и отдельная установка .NET не нужны. EXE содержит среду выполнения; нативные библиотеки автоматически извлекаются средствами .NET. Документацию рекомендуется оставить рядом. Сборка не подписана сертификатом издателя.
 
-Данные хранятся в `%LOCALAPPDATA%\RedditGallery`, а не рядом с EXE. Для отдельной базы: `"Reddit Post Organizer.exe" --data-dir "D:\GalleryData"`. Старый формат базы Python v1 читается напрямую. После первого запуска новой версии очередь поставлена на паузу, браузерная сессия не используется. Перед обновлением завершите старое приложение через «Выйти» и сохраните резервную копию.
+При обновлении прежняя папка данных переносится автоматически; база получает имя `publications.sqlite3`. Старые резервные копии поддерживаются. Если обнаружены две папки данных, приложение не объединяет и не перезаписывает их автоматически.
+
+Данные хранятся в `%LOCALAPPDATA%\RedditPostOrganizer`, а не рядом с EXE. Для отдельной базы: `"Reddit Post Organizer.exe" --data-dir "D:\OrganizerData"`. Старый формат базы Python v1 читается напрямую. После первого запуска новой версии очередь поставлена на паузу, браузерная сессия не используется. Перед обновлением завершите старое приложение через «Выйти» и сохраните резервную копию.
 
 ## Подключение Reddit
 
@@ -31,10 +33,10 @@ API-доступ пока не одобрен; живую отправку и и
 
 ## Проект
 
-- `src/Gallery.Core` — база, расписание, OAuth, API, импорт медиа.
-- `src/Gallery.Desktop` — Avalonia-интерфейс, календарь, редактор и трей.
-- `tests/Gallery.Tests` — тесты SQLite, API с подменённым HTTP, Avalonia Headless.
-- `RedditGallery.sln` — решение для IDE; `packages.lock.json` фиксируют зависимости.
+- `src/RedditPostOrganizer.Core` — база, расписание, OAuth, API, импорт медиа.
+- `src/RedditPostOrganizer.Desktop` — Avalonia-интерфейс, календарь, редактор и трей.
+- `tests/RedditPostOrganizer.Tests` — тесты SQLite, API с подменённым HTTP, Avalonia Headless.
+- `RedditPostOrganizer.sln` — решение для IDE; `packages.lock.json` фиксируют зависимости.
 
 Разработка: установите .NET SDK 10, затем `./setup-dev.ps1`, `./run-dev.ps1`. Проверки: `./test.ps1`. Portable: `./build.ps1`. Подробности: [PROJECT.md](PROJECT.md), результаты: [VALIDATION.md](VALIDATION.md).
 

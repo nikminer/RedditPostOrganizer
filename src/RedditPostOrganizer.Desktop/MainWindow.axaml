@@ -1,7 +1,7 @@
 <Window
   xmlns="https://github.com/avaloniaui"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-  x:Class="Gallery.Desktop.MainWindow"
+  x:Class="RedditPostOrganizer.Desktop.MainWindow"
   Title="Reddit Post Organizer"
   Width="1320"
   Height="900"
@@ -17,7 +17,12 @@
     >
       <Grid ColumnDefinitions="*,Auto">
         <StackPanel Spacing="4" Margin="0,0,16,0">
-          <TextBlock Text="Reddit Post Organizer" FontSize="24" FontWeight="Bold" TextWrapping="Wrap" />
+          <TextBlock
+            Text="Reddit Post Organizer"
+            FontSize="24"
+            FontWeight="Bold"
+            TextWrapping="Wrap"
+          />
           <TextBlock
             Text="REDDIT API · КАЛЕНДАРЬ ПУБЛИКАЦИЙ"
             VerticalAlignment="Center"
@@ -81,7 +86,12 @@
     </Grid>
     <Border x:Name="LockScreen" IsVisible="False" Background="#F3F5FA">
       <StackPanel Width="380" VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="16">
-        <TextBlock Text="Reddit Post Organizer заблокирован" TextWrapping="Wrap" FontSize="26" FontWeight="Bold" />
+        <TextBlock
+          Text="Reddit Post Organizer заблокирован"
+          TextWrapping="Wrap"
+          FontSize="26"
+          FontWeight="Bold"
+        />
         <TextBlock Text="Фоновая очередь продолжает работу." />
         <TextBox x:Name="LockPassword" PasswordChar="●" Watermark="Пароль приложения" />
         <Button x:Name="UnlockButton" Content="Разблокировать" Classes="primary" />

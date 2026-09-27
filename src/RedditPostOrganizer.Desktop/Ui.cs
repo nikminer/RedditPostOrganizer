@@ -3,9 +3,9 @@ using Avalonia.Controls;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Platform.Storage;
-using Gallery.Core;
+using RedditPostOrganizer.Core;
 
-namespace Gallery.Desktop;
+namespace RedditPostOrganizer.Desktop;
 
 public static class Ui
 {

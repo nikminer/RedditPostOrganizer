@@ -6,13 +6,13 @@ using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
-using Gallery.Core;
+using RedditPostOrganizer.Core;
 
-namespace Gallery.Desktop;
+namespace RedditPostOrganizer.Desktop;
 
 public sealed class EditorWindow : Window
 {
-    private readonly GalleryService service;
+    private readonly PublicationService service;
     private readonly Post? post;
     private readonly ObservableCollection<MediaItem> images;
     private readonly TextBox title = new(),
@@ -26,7 +26,7 @@ public sealed class EditorWindow : Window
     private readonly ListBox mediaList = new() { Height = 245 };
     private readonly TextBlock status = Ui.Text("");
 
-    public EditorWindow(GalleryService service, Post? post = null, DateTime? date = null)
+    public EditorWindow(PublicationService service, Post? post = null, DateTime? date = null)
     {
         this.service = service;
         this.post = post;

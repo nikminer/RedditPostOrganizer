@@ -6,13 +6,13 @@ using Avalonia.Headless.XUnit;
 using Avalonia.Media;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
-using Gallery.Core;
-using Gallery.Desktop;
+using RedditPostOrganizer.Core;
+using RedditPostOrganizer.Desktop;
 using Xunit;
 
-[assembly: AvaloniaTestApplication(typeof(Gallery.Tests.TestAppBuilder))]
+[assembly: AvaloniaTestApplication(typeof(RedditPostOrganizer.Tests.TestAppBuilder))]
 
-namespace Gallery.Tests;
+namespace RedditPostOrganizer.Tests;
 
 public class TestAppBuilder
 {
@@ -29,7 +29,7 @@ public class UiTests
     public async Task CalendarViewsAndPopupColorsRender()
     {
         using var f = new Fixture();
-        await using var service = new GalleryService(f.Store);
+        await using var service = new PublicationService(f.Store);
         f.Store.Save(f.Content(), Clock.Now + 3600);
         f.Store.ImportPost(
             "abc",

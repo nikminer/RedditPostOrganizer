@@ -18,7 +18,7 @@ Requested scopes:
 | flair | Retrieve selectable post flair for the destination community |
 | history | Read the authenticated user's submitted image posts |
 
-Source: `src/Gallery.Core/RedditApi.cs`. OAuth token/revoke endpoints on www.reddit.com; authenticated data requests on oauth.reddit.com; community `/about`, `/api/flairselector/`, `/user/{authenticated_user}/submitted`. Native gallery uploads use `/api/media/asset.json` and `/api/submit_gallery_post.json`. These gallery endpoints are not fully covered by Reddit's public endpoint documentation; their request structure follows established client implementations (PRAW 8). Availability for the approved installed app, upload readiness, required permissions and error schemas must be validated after approval. The application does not claim gallery publishing is already certified or tested live.
+Source: `src/RedditPostOrganizer.Core/RedditApi.cs`. OAuth token/revoke endpoints on www.reddit.com; authenticated data requests on oauth.reddit.com; community `/about`, `/api/flairselector/`, `/user/{authenticated_user}/submitted`. Native gallery uploads use `/api/media/asset.json` and `/api/submit_gallery_post.json`. These gallery endpoints are not fully covered by Reddit's public endpoint documentation; their request structure follows established client implementations (PRAW 8). Availability for the approved installed app, upload readiness, required permissions and error schemas must be validated after approval. The application does not claim gallery publishing is already certified or tested live.
 
 ## Behavior and limits
 
@@ -30,12 +30,12 @@ Import reads the authenticated user's submitted listing with pagination. Only na
 
 ## Privacy, retention and security
 
-All data stays on the user's Windows PC in `%LOCALAPPDATA%\RedditGallery` or an explicitly chosen data directory. SQLite contains drafts, imported post metadata, scheduling events, private notes and local tags. Images are copied to local storage. Private notes/tags are not sent to Reddit. There is no application server, analytics or remote database.
+All data stays on the user's Windows PC in `%LOCALAPPDATA%\RedditPostOrganizer` or an explicitly chosen data directory. SQLite contains drafts, imported post metadata, scheduling events, private notes and local tags. Images are copied to local storage. Private notes/tags are not sent to Reddit. There is no application server, analytics or remote database.
 
 Access/refresh tokens are encrypted with Windows DPAPI CurrentUser in `oauth-token.bin`; passwords, codes and tokens are not written to logs or repository files. Disconnect attempts server revocation and always deletes the local token. Account information and secrets are excluded from backup exports. Restoring a backup requires reconnecting Reddit. The optional interface password does not encrypt local images or SQLite. Users can remove local data through the data folder; this never deletes posts on Reddit. Old browser-profile folders from previous versions are not read or included in backup exports.
 
 ## Review and acceptance
 
-Run `dotnet test RedditGallery.sln`; inspect OAuth, upload, import and uncertainty handling in Gallery.Core. Build a self-contained Windows executable with `./build.ps1`. Before enabling production use, provide approval/client ID, test login/revocation, a permitted gallery in an owner-controlled test community, NSFW/flair/captions/order, import pagination, expired authorization and real rate-limit responses. If native gallery endpoints are not approved/available, leave publication disabled and revise the supported scope with Reddit; there is no scraping fallback.
+Run `dotnet test RedditPostOrganizer.sln`; inspect OAuth, upload, import and uncertainty handling in RedditPostOrganizer.Core. Build a self-contained Windows executable with `./build.ps1`. Before enabling production use, provide approval/client ID, test login/revocation, a permitted gallery in an owner-controlled test community, NSFW/flair/captions/order, import pagination, expired authorization and real rate-limit responses. If native gallery endpoints are not approved/available, leave publication disabled and revise the supported scope with Reddit; there is no scraping fallback.
 
 References: [Reddit OAuth](https://github.com/reddit-archive/reddit/wiki/OAuth2), [Reddit API reference](https://www.reddit.com/dev/api/), [Responsible Builder Policy](https://support.reddithelp.com/hc/en-us/articles/42728983564564-Responsible-Builder-Policy).

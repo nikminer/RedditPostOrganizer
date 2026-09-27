@@ -4,13 +4,13 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
-using Gallery.Core;
+using RedditPostOrganizer.Core;
 
-namespace Gallery.Desktop;
+namespace RedditPostOrganizer.Desktop;
 
 public sealed partial class App : Application
 {
-    private GalleryService? service;
+    private PublicationService? service;
     private TrayIcon? tray;
 
     public override void Initialize() => AvaloniaXamlLoader.Load(this);
@@ -19,12 +19,7 @@ public sealed partial class App : Application
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            var root =
-                Program.Argument("--data-dir")
-                ?? Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                    "RedditGallery"
-                );
+            var root = Program.DataRoot;
             service = new(new Store(root));
             var window = new MainWindow(service);
             desktop.MainWindow = window;

@@ -2,21 +2,21 @@ param([switch]$SkipTests)
 $ErrorActionPreference = 'Stop'
 Push-Location $PSScriptRoot
 try {
-    dotnet restore RedditGallery.sln --locked-mode
+    dotnet restore RedditPostOrganizer.sln --locked-mode
     if ($LASTEXITCODE) { throw 'Restore failed' }
     if (-not $SkipTests) {
-        dotnet test RedditGallery.sln -c Release --no-restore
+        dotnet test RedditPostOrganizer.sln -c Release --no-restore
         if ($LASTEXITCODE) { throw 'Tests failed' }
     }
     $stage = Join-Path $PSScriptRoot ('work/publish-' + [guid]::NewGuid().ToString('N'))
-    dotnet publish src/Gallery.Desktop -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:DebugType=None -p:RestoreLockedMode=true -o $stage
+    dotnet publish src/RedditPostOrganizer.Desktop -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:DebugType=None -p:RestoreLockedMode=true -o $stage
     if ($LASTEXITCODE) { throw 'Publish failed' }
     $exeName = 'Reddit Post Organizer.exe'
-    Rename-Item -LiteralPath (Join-Path $stage 'RedditGallery.exe') -NewName $exeName
+    Rename-Item -LiteralPath (Join-Path $stage 'RedditPostOrganizer.exe') -NewName $exeName
     Copy-Item README.md,API_ACCESS.md,VALIDATION.md -Destination $stage
     & ./scripts/collect-notices.ps1
     Copy-Item THIRD_PARTY_LICENSES -Destination $stage -Recurse
-    $target = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot 'dist/RedditGallery'))
+    $target = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot 'dist/RedditPostOrganizer'))
     $expected = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot 'dist'))
     if ([IO.Path]::GetDirectoryName($target) -ne $expected) { throw 'Unexpected output path' }
     $active = Get-Process | Where-Object { $_.Path -and ([IO.Path]::GetDirectoryName($_.Path) -eq $target) }

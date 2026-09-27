@@ -4,7 +4,7 @@
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <AssemblyName>RedditGallery</AssemblyName>
+    <AssemblyName>RedditPostOrganizer</AssemblyName>
     <Title>Reddit Post Organizer</Title>
     <AssemblyTitle>Reddit Post Organizer</AssemblyTitle>
     <Product>Reddit Post Organizer</Product>
@@ -15,7 +15,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Tmds.DBus.Protocol" Version="0.21.3" />
-    <ProjectReference Include="../Gallery.Core/Gallery.Core.csproj" />
+    <ProjectReference Include="../RedditPostOrganizer.Core/RedditPostOrganizer.Core.csproj" />
     <PackageReference Include="Avalonia" Version="11.3.10" />
     <PackageReference Include="Avalonia.Desktop" Version="11.3.10" />
     <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.10" />

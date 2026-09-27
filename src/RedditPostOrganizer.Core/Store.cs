@@ -4,19 +4,20 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.Data.Sqlite;
 
-namespace Gallery.Core;
+namespace RedditPostOrganizer.Core;
 
 public sealed class Store
 {
     private readonly object gate = new();
     public string Root { get; }
     public string MediaDirectory => Path.Combine(Root, "media");
-    public string DatabasePath => Path.Combine(Root, "gallery.sqlite3");
+    public string DatabasePath => Path.Combine(Root, "publications.sqlite3");
 
     public Store(string root)
     {
         Root = Path.GetFullPath(root);
         Directory.CreateDirectory(MediaDirectory);
+        MigrateDatabaseName();
         using var db = Open();
         if (Convert.ToInt32(Scalar(db, "PRAGMA user_version")) > 1)
             throw new InvalidOperationException("База создана более новой версией программы");
@@ -33,6 +34,38 @@ public sealed class Store
             PRAGMA user_version=1;
             """
         );
+    }
+
+    private void MigrateDatabaseName()
+    {
+        var legacy = Path.Combine(Root, "gallery.sqlite3");
+        if (!File.Exists(legacy))
+            return;
+        if (File.Exists(DatabasePath))
+            throw new InvalidOperationException(
+                "В папке найдены две базы данных. Автоматическая замена отключена."
+            );
+        // Checkpoint the legacy WAL before renaming the main file.
+        using (
+            var db = new SqliteConnection(
+                new SqliteConnectionStringBuilder
+                {
+                    DataSource = legacy,
+                    Pooling = false,
+                }.ToString()
+            )
+        )
+        {
+            db.Open();
+            using var cmd = db.CreateCommand();
+            cmd.CommandText = "PRAGMA wal_checkpoint(TRUNCATE)";
+            using var rows = cmd.ExecuteReader();
+            if (rows.Read() && rows.GetInt32(0) != 0)
+                throw new InvalidOperationException(
+                    "Закройте предыдущую версию приложения перед переносом базы."
+                );
+        }
+        File.Move(legacy, DatabasePath);
     }
 
     private SqliteConnection Open()
@@ -681,7 +714,7 @@ public sealed class Store
                     );
                 }
                 using var zip = ZipFile.Open(destination, ZipArchiveMode.Create);
-                zip.CreateEntryFromFile(temp, "gallery.sqlite3");
+                zip.CreateEntryFromFile(temp, "publications.sqlite3");
                 foreach (var file in Directory.EnumerateFiles(MediaDirectory))
                     zip.CreateEntryFromFile(file, "media/" + Path.GetFileName(file));
             }
@@ -708,16 +741,20 @@ public sealed class Store
                     {
                         if (
                             e.FullName != "gallery.sqlite3"
+                            && e.FullName != "publications.sqlite3"
                             && !Regex.IsMatch(e.FullName, "^media/[a-f0-9]{64}\\.(jpg|png|webp)$")
                         )
                             throw new InvalidOperationException("Неподдерживаемый файл в архиве");
-                        var target = Path.Combine(stage, e.FullName);
+                        var target = Path.Combine(
+                            stage,
+                            e.FullName == "gallery.sqlite3" ? "publications.sqlite3" : e.FullName
+                        );
                         Directory.CreateDirectory(Path.GetDirectoryName(target)!);
                         e.ExtractToFile(target);
                     }
                 }
                 using var incoming = new SqliteConnection(
-                    "Pooling=false;Data Source=" + Path.Combine(stage, "gallery.sqlite3")
+                    "Pooling=false;Data Source=" + Path.Combine(stage, "publications.sqlite3")
                 );
                 incoming.Open();
                 if (

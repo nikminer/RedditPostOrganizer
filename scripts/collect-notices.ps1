@@ -1,6 +1,6 @@
 param([string]$Destination = (Join-Path $PSScriptRoot '../THIRD_PARTY_LICENSES'))
 $ErrorActionPreference = 'Stop'
-$assets = Get-Content (Join-Path $PSScriptRoot '../src/Gallery.Desktop/obj/project.assets.json') -Raw | ConvertFrom-Json
+$assets = Get-Content (Join-Path $PSScriptRoot '../src/RedditPostOrganizer.Desktop/obj/project.assets.json') -Raw | ConvertFrom-Json
 $cacheRoot = ($assets.packageFolders.PSObject.Properties | Select-Object -First 1).Name
 New-Item -ItemType Directory -Force -Path $Destination | Out-Null
 $lines = [Collections.Generic.List[string]]::new()

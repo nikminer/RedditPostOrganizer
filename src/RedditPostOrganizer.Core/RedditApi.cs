@@ -6,7 +6,7 @@ using System.Text;
 using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
 
-namespace Gallery.Core;
+namespace RedditPostOrganizer.Core;
 
 public record TokenRecord
 {
@@ -76,7 +76,7 @@ public sealed class RedditApi : IDisposable
     public const string RedirectUri = "http://127.0.0.1:8765/callback";
     public const string Scopes = "identity read submit flair history";
     private const string UserAgent =
-        "windows:reddit-gallery-desktop:v3.0.0 (personal gallery scheduler)";
+        "windows:reddit-post-organizer:v3.0.0 (personal gallery scheduler)";
     private readonly Store store;
     private readonly HttpClient client;
     private readonly HttpClient media;

@@ -1,13 +1,13 @@
 using System.IO.Compression;
-using Gallery.Core;
+using RedditPostOrganizer.Core;
 using Xunit;
 
-namespace Gallery.Tests;
+namespace RedditPostOrganizer.Tests;
 
 public sealed class Fixture : IDisposable
 {
     public string Root { get; } =
-        Path.Combine(Path.GetTempPath(), "gallery-test-" + Guid.NewGuid());
+        Path.Combine(Path.GetTempPath(), "organizer-test-" + Guid.NewGuid());
     public Store Store { get; }
     public static byte[] Png =>
         Convert.FromBase64String(
@@ -39,7 +39,7 @@ public sealed class Fixture : IDisposable
     {
         if (
             Path.GetDirectoryName(Root) == Path.GetTempPath().TrimEnd(Path.DirectorySeparatorChar)
-            && Path.GetFileName(Root).StartsWith("gallery-test-")
+            && Path.GetFileName(Root).StartsWith("organizer-test-")
         )
             Directory.Delete(Root, true);
     }
@@ -47,6 +47,54 @@ public sealed class Fixture : IDisposable
 
 public sealed class CoreTests
 {
+    [Fact]
+    public void LegacyDatabaseNameMigratesAndPreservesPosts()
+    {
+        using var f = new Fixture();
+        var id = f.Store.Save(f.Content());
+        File.Move(f.Store.DatabasePath, Path.Combine(f.Root, "gallery.sqlite3"));
+        var migrated = new Store(f.Root);
+        Assert.Equal(id, Assert.Single(migrated.Posts()).Id);
+        Assert.True(File.Exists(Path.Combine(f.Root, "publications.sqlite3")));
+        Assert.False(File.Exists(Path.Combine(f.Root, "gallery.sqlite3")));
+        Assert.Single(new Store(f.Root).Posts());
+    }
+
+    [Fact]
+    public void LegacyDataFolderMovesOnceWithoutOverwritingAnotherFolder()
+    {
+        using var f = new Fixture();
+        var old = Path.Combine(f.Root, "RedditGallery");
+        Directory.CreateDirectory(old);
+        File.WriteAllText(Path.Combine(old, "marker"), "preserved");
+        var current = DataPaths.ResolveDefault(f.Root);
+        Assert.EndsWith("RedditPostOrganizer", current);
+        Assert.Equal("preserved", File.ReadAllText(Path.Combine(current, "marker")));
+        Assert.Equal(current, DataPaths.ResolveDefault(f.Root));
+        Directory.CreateDirectory(old);
+        Assert.Throws<InvalidOperationException>(() => DataPaths.ResolveDefault(f.Root));
+    }
+
+    [Fact]
+    public void LegacyBackupDatabaseEntryIsStillAccepted()
+    {
+        using var source = new Fixture();
+        var id = source.Store.Save(source.Content());
+        var zip = Path.Combine(source.Root, "legacy.zip");
+        source.Store.Backup(zip);
+        using (var archive = ZipFile.Open(zip, ZipArchiveMode.Update))
+        {
+            var current = archive.GetEntry("publications.sqlite3")!;
+            using (var input = current.Open())
+            using (var output = archive.CreateEntry("gallery.sqlite3").Open())
+                input.CopyTo(output);
+            current.Delete();
+        }
+        using var destination = new Fixture();
+        destination.Store.Restore(zip);
+        Assert.Equal(id, Assert.Single(destination.Store.Posts()).Id);
+    }
+
     [Fact]
     public void RestartShiftsWholeQueueOnceAcrossDays()
     {
@@ -131,7 +179,7 @@ public sealed class CoreTests
         var a = f.Store.Save(f.Content(), 1000);
         var b = f.Store.Save(f.Content(), 90000);
         var post = f.Store.Claim(1001)!;
-        GalleryService.ApplyFailure(f.Store, post, new ApiFailure("failure", kind, seconds));
+        PublicationService.ApplyFailure(f.Store, post, new ApiFailure("failure", kind, seconds));
         Assert.Equal(state, f.Store.Get(a).Status);
         Assert.Equal(90000 + (kind is "network" or "rate" ? seconds : 0), f.Store.Get(b).Scheduled);
         if (kind == "auth")
@@ -201,7 +249,10 @@ public sealed class CoreTests
         using (var archive = ZipFile.OpenRead(zip))
             Assert.All(
                 archive.Entries,
-                e => Assert.True(e.FullName == "gallery.sqlite3" || e.FullName.StartsWith("media/"))
+                e =>
+                    Assert.True(
+                        e.FullName == "publications.sqlite3" || e.FullName.StartsWith("media/")
+                    )
             );
         using var target = new Fixture();
         target.Store.SetPassword("target-password");

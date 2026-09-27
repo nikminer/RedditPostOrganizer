@@ -10,15 +10,15 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
-using Gallery.Core;
+using RedditPostOrganizer.Core;
 
-namespace Gallery.Desktop;
+namespace RedditPostOrganizer.Desktop;
 
 public sealed partial class MainWindow : Window
 {
     private static readonly DataFormat<string> PostFormat =
-        DataFormat.CreateStringApplicationFormat("gallery-post");
-    private readonly GalleryService service;
+        DataFormat.CreateStringApplicationFormat("reddit-post-organizer-post");
+    private readonly PublicationService service;
     private DateTime anchor = DateTime.Today;
     private bool locked,
         exiting,
@@ -31,7 +31,7 @@ public sealed partial class MainWindow : Window
 
     private string Zone => service.Store.Setting("timezone", "Europe/Moscow");
 
-    public MainWindow(GalleryService service)
+    public MainWindow(PublicationService service)
     {
         this.service = service;
         AvaloniaXamlLoader.Load(this);
@@ -1132,7 +1132,7 @@ public sealed partial class MainWindow : Window
                     );
                     if (auto.IsChecked == true)
                         key.SetValue(
-                            "RedditGallery",
+                            "RedditPostOrganizer",
                             "\""
                                 + Environment.ProcessPath
                                 + "\" --tray --data-dir \""
@@ -1140,7 +1140,7 @@ public sealed partial class MainWindow : Window
                                 + "\""
                         );
                     else
-                        key.DeleteValue("RedditGallery", false);
+                        key.DeleteValue("RedditPostOrganizer", false);
                 }
                 service.Store.Set("autostart", auto.IsChecked == true);
                 service.Store.Set("timezone", zone.SelectedItem?.ToString() ?? Zone);

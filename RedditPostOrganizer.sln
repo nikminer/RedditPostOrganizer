@@ -1,17 +1,17 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{827E0CD3-B72D-47B6-A68D-7590B98EB39B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallery.Core", "src\Gallery.Core\Gallery.Core.csproj", "{C70989B4-F463-4DB9-828C-27E0A2FC2F9A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedditPostOrganizer.Core", "src\RedditPostOrganizer.Core\RedditPostOrganizer.Core.csproj", "{C70989B4-F463-4DB9-828C-27E0A2FC2F9A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallery.Desktop", "src\Gallery.Desktop\Gallery.Desktop.csproj", "{78BD49C0-4DA4-44F7-AE6D-98BDA6BDFA91}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedditPostOrganizer.Desktop", "src\RedditPostOrganizer.Desktop\RedditPostOrganizer.Desktop.csproj", "{78BD49C0-4DA4-44F7-AE6D-98BDA6BDFA91}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{0AB3BF05-4346-4AA6-1389-037BE0695223}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gallery.Tests", "tests\Gallery.Tests\Gallery.Tests.csproj", "{67B8A191-9020-46EA-B773-5B1E341A7497}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedditPostOrganizer.Tests", "tests\RedditPostOrganizer.Tests\RedditPostOrganizer.Tests.csproj", "{67B8A191-9020-46EA-B773-5B1E341A7497}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

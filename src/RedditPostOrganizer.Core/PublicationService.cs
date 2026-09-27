@@ -1,6 +1,6 @@
-namespace Gallery.Core;
+namespace RedditPostOrganizer.Core;
 
-public sealed class GalleryService : IAsyncDisposable
+public sealed class PublicationService : IAsyncDisposable
 {
     public Store Store { get; }
     public RedditApi Api { get; }
@@ -11,7 +11,7 @@ public sealed class GalleryService : IAsyncDisposable
     public event Action<string>? Message;
     public event Action? Changed;
 
-    public GalleryService(Store store, RedditApi? api = null)
+    public PublicationService(Store store, RedditApi? api = null)
     {
         Store = store;
         store.MigrateTransport();

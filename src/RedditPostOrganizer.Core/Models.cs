@@ -1,7 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Gallery.Core;
+namespace RedditPostOrganizer.Core;
 
 public static class Json
 {

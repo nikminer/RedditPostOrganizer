@@ -1,10 +1,10 @@
 using System.Net;
 using System.Text;
 using System.Text.Json.Nodes;
-using Gallery.Core;
+using RedditPostOrganizer.Core;
 using Xunit;
 
-namespace Gallery.Tests;
+namespace RedditPostOrganizer.Tests;
 
 public class MemoryVault : ITokenVault
 {
